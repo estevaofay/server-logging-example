@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+
 const { randomInt } = require('crypto');
 
-@Injectable()
 export class AppService {
-  async complexEndpoint() {
+  constructor(@InjectPinoLogger(AppService.name) private readonly logger: PinoLogger) {
+  }
 
+  async complexEndpoint() {
     const [dbResult, apiResult] = await Promise.all([this.simulateDbCall(), this.simulateApiCall(), this.logIteratively])
     return {dbResult, apiResult};
   }
@@ -13,7 +15,7 @@ export class AppService {
     const delay = randomInt(100, 300); // Random DB delay
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log('[DB] Fetched data in', delay, 'ms');
+        this.logger.info(`[DB] Fetched data in ${delay} ms`);
         resolve({ data: 'db-result' });
       }, delay);
     });
@@ -26,10 +28,10 @@ export class AppService {
     return new Promise((resolve) => {
       setTimeout(() => {
         if (shouldFail) {
-          console.log('[API] Failed after', delay, 'ms');
+          this.logger.info('[API] Failed after', delay, 'ms');
           resolve({data: "API error" });
         } else {
-          console.log('[API] Success after', delay, 'ms');
+          this.logger.info('[API] Success after', delay, 'ms');
           resolve({ data: 'API success' });
         }
       }, delay);
@@ -41,7 +43,7 @@ export class AppService {
   async logIteratively() {
     for (let i = 1; i <= 5; i++) {
       await this.sleep(200); // Wait 200ms
-      console.log(`[Iterative Logic] Step ${i}`);
+      this.logger.info(`[Iterative Logic] Step ${i}`);
     }
   }
 }
