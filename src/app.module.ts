@@ -1,8 +1,9 @@
-import { Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from 'nestjs-pino';
 import { randomBytes } from 'crypto';
+import { LoggerMiddleware } from './logger.middleware';
 
 @Module({
   imports: [LoggerModule.forRoot({
@@ -22,6 +23,9 @@ import { randomBytes } from 'crypto';
           req.body = req.raw.body;
           return req;
         },
+        res(res) {
+          return res;
+        },
       },
       redact: ["hostname"],
     },
@@ -30,4 +34,8 @@ import { randomBytes } from 'crypto';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('/');
+  }
+}
