@@ -17,8 +17,8 @@ export class AppController {
     throw new Error('Internal Server Error');
   }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('/complex')
+  complexEndpoint() {
+    return this.appService.complexEndpoint();
   }
 }
