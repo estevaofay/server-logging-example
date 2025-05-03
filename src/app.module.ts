@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from 'nestjs-pino';
@@ -23,8 +23,9 @@ import { randomBytes } from 'crypto';
           return req;
         },
       },
-      redact: ["hostname"]
-    }
+      redact: ["hostname"],
+    },
+    exclude: [{ method: RequestMethod.ALL, path: 'health' }],
   })],
   controllers: [AppController],
   providers: [AppService],
