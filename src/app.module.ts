@@ -17,6 +17,12 @@ import { randomBytes } from 'crypto';
           },
         }
         : undefined,
+      serializers: {
+        req(req) {
+          req.body = req.raw.body;
+          return req;
+        },
+      },
     }
   })],
   controllers: [AppController],
