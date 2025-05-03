@@ -11,6 +11,12 @@ export class AppController {
     return 'OK';
   }
 
+  @Get('/error')
+  @HttpCode(HttpStatus.INTERNAL_SERVER_ERROR)
+  error(): string {
+    throw new Error('Internal Server Error');
+  }
+
   @Get()
   getHello(): string {
     return this.appService.getHello();
