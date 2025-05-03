@@ -23,6 +23,7 @@ import { randomBytes } from 'crypto';
           return req;
         },
       },
+      redact: ["hostname"]
     }
   })],
   controllers: [AppController],
