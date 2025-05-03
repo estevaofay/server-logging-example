@@ -6,12 +6,14 @@ import { LoggerModule } from 'nestjs-pino';
 @Module({
   imports: [LoggerModule.forRoot({
     pinoHttp:{
-      transport: {
-        target: 'pino-pretty',
-        options: {
-          singleLine: true,
+      transport: process.env.ENABLE_PINO_PRETTY === 'true'
+        ? {
+          target: 'pino-pretty',
+          options: {
+            singleLine: true,
+          },
         }
-      }
+        : undefined,
     }
   })],
   controllers: [AppController],
